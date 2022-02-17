@@ -1,0 +1,252 @@
+---
+title: "Tarea 2"
+author: "Alejandre Sanjuán Carla Valeria"
+date: "16/2/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## **Problema 1**
+
+
+1. (15) Considera las siguientes cantidades discute y justifica qué tipo de distribución
+de probabilidad pueden tener las siguientes variables:
+a. El número (talla) de calzado de adultos varones en México.
+
+ Distribución normal o unimodal. Esto debido a que puede haber tallas muy grandes o muy pequeñas pero realmente estas se pueden agrupar dentro de un promedio a nivel México.
+
+b. La distribución de habitantes en asentamientos humanos de México.
+
+Distribución normal o unimodal. Debido a que casi nadie vive aislado; casi todos se distribuyen al rededor del promedio, en conjuntos de ni muchas ni pocas casas. 
+
+c. La velocidad promedio de los automóviles en Bernardo Quintana a las 9 de la
+mañana en un día laborable.
+
+Distribución normal o unimodal. En esta hora el tráfico es mayor, entonces no pueden avanzar a mas de 60 km/h tal vez, las velocidades de los carros se podrian ajustar deacuerdo a un promedio.
+
+
+d. La velocidad promedio de los automóviles en Bernardo Quintana a las 3 de la
+mañana.
+
+Distribución de cola larga. porque a esta hora no hay trafico que es una variable que afecta durante el dia la velocidad de los carros entonces aunque sean menos automoviles las velocidades a las que vayan van hacer muy variables puede ser muy rapido o muy lento.
+
+## **Problema 2**
+
+2. (5) Supongamos que tenemos dos nodos (A,B) en una red. El nodo A y B tiene el
+mismo degree, pero el A tiene un coeficiente de clusterización de 1 y el nodo B un
+coeficiente bajo.Dibuja está situación y explica cuál sería una mejor diana si quieres
+eliminarlos y afectar a la red.
+
+```{r}
+library(igraph)
+
+red_AB <- make_empty_graph(n=9, directed = F)
+
+red_AB <- add.edges(red_AB, c(1,2,1,3,2,3,1,5,5,6,6,4,6,7,6,8,6,9,9,7,4,8,7,4))
+
+plot(red_AB)
+
+
+r1 <- delete_vertices(red_AB, 6) #quitamos el nodo A que tiene mayor coeficiente de clusterización
+plot(r1)
+
+r2 <- delete_vertices(red_AB, 1) #quitamos el nodo B que tiene menor coesficiente de clusterización
+plot(r2)
+
+
+```
+ 
+ Seria mejor atacar el nodo A(6), contemplando que su coeficiente de clusteriacion es 1, y el coeficiente con el valor mas alto nos da a entender que tiene mayor número de conexiones con los nodos mas cercanos (clica), al atacar este nodo la red se ve mas afectada ya que se pierden mayor numero de conexiones que con el nodo B (1).
+ 
+## **Problema 3**
+    
+3. (40) Elabora un programa en R que usando funciones calcule, a partir de una matriz
+de adyacencia (Sólo utiliza R base para resolver este problema)
+
+
+a. Si la red es dirigida o no.
+```{r}
+library(igraphdata)
+
+mat_amix <- as.matrix(matriz)
+
+mat_amix
+
+
+ed <- matriz [2:6]
+ed
+
+```
+Es dirigida
+
+b. Si la red es pesada o no.
+```{r}
+
+matriz #cargar la matriz de red amigos (matriz adyacente)
+
+pes <- as.factor(matriz) # poder utilizarla como factor
+
+table(pes) #al verlo como tabla sabemos que solo tenemos valores de 0 y 1, si tuviera valores por encima de este podriamos considerarla como pesada, pero es no pesada.
+
+```
+Es no pesada
+
+c. El degree de los nodos.
+
+```{r}
+
+nod <- c(1:nrow(matriz))
+nod
+
+nup <- c()
+
+for(n in nod){                   #intente utilizar un ciclo for para saber el degree de los nodos
+    d <- as.vector(matriz[n,])
+    d <- subset(s, 1 == s) nup [n] <- length(d)}
+
+
+```
+
+d. El histograma del degree.
+
+```{r}
+
+hist(d)
+```
+
+## **Problema 4**
+
+4. (40) A partir de la red de interacción de proteínas alojada en la librería igraphdata,
+que puedes llamar mediante data(yeast) elabora un programa en R (acá sí puedes
+usar librerías especializadas de R) que
+
+
+a. Calcule la distribución de conectividades y grafique esa distribución . Discute
+tu resultado.
+
+```{r}
+library(igraphdata)#cargamos igraphdata para poder usar yeast
+library(igraph)
+
+data("yeast")
+
+r3 <- degree.distribution(yeast)
+
+hist(r3) #histograma de distribucion
+
+```
+Tenemos una distribución de cola larga en los datos, representando como las conexioens entre algunas proteinas y de yeast no estan tan conectadas o inclusive no lo estan a comparcion de otras.
+
+b. Grafique el boxplot de la distribución de conectividades y discute tu resultado.
+
+```{r}
+
+r3 <- degree.distribution(yeast)
+
+boxplot(r3)
+
+```
+Tenemos mayor importancia sobre la distribucion de los datos que son mas grandes, por encima de la media estan estos, tiene sentido considerando que tenemos en el histograma anterior una distribucion de cola larga, los datos mas grandes o nodos con mayor numero de conexiones son de los que depende la grafica. 
+
+c. Encuentre la proporción de nodos que tienen 15 o más conectividades.
+
+```{r}
+library(igraphdata)
+data("yeast")
+
+r4 <- degree(yeast) #un objeto con el degree de yeast
+
+d_15 <- subset(r4, 15 <= degree(yeast)) # dentro de este subset podemos buscar los nodos de 15 a mayor conectividades
+
+length(d_15) #la longitud de este objeto 
+
+```
+
+d. Calcule el degree máximo de la red.
+
+```{r}
+
+md <- max(degree(yeast, mode = "out"))
+
+```
+
+e. Calcule el diámetro
+
+```{r}
+
+diameter(yeast)
+
+```
+
+f. La trayectoria más larga.
+
+```{r}
+
+max(distances(yeast,v= V(yeast), to= V(yeast), mode = c("out")))
+
+```
+
+g. Elimine los 10 nodos más conectados de la red y determine el diámetro cada
+vez que lo haga.
+
+```{r}
+
+pro_con <- c () # se crea un vector vacio
+
+protein <- head(sort(degree(yeast, mode = "out"), decreasing = T), 10) # determinamos los 10 nodos mas conectados en un objeto
+
+protein
+
+vec_pro <- c(names(protein)) # Colocamos las 10 proteinas en un vector
+vec_pro
+
+
+for(p in vec_pro){  
+    s <- delete_vertices(yeast, p)
+    print(diameter(s))
+}   #con el ciclo for podemos ver el cambio de diametro cada que se quita un nodo sin necesidad de correr cada una de las proteinas solo con delete_vertices
+```
+
+h. Determine los diez nodos más importantes por al menos tres medidas de
+centralidad.
+```{r}
+
+protein <- head(sort(degree(yeast, mode = "out"), decreasing = T), 10) #degree
+
+patpro <- head(sort(shortest.paths(yeast, v = V(yeast), to = V(yeast), #path
+  mode = c("out")), decreasing = T), 10)
+patpro
+
+eccpro <- head(sort(eccentricity(yeast, mode = "out"), decreasing = T), 10) #excentricidad
+eccpro
+
+```
+
+i. Clusterizar la red por al menos dos métodos y determinar el tamaño del
+clúster más grande.
+
+```{r}
+
+proclu <- cluster_infomap(yeast) #metodo de cluster_infomap
+
+max(table(membership(proclu)))
+
+procli <- cluster.distribution(yeast) #cluster.distribution
+
+max(table(membership(procli)))
+
+
+```
+
+j. Determine si la red es de mundo pequeño, ultra pequeño u otra.
+
+```{r}
+
+transitivity(yeast)
+
+```
+
+El concepto de mundo pequeño y la importancia que tienen los nodos con las distancias cortas a llegar a otros es lo que me hace inferir que no es de mundo pequeño, la distribucion de los datos en esta yeast es de cola larga, puede que haya nodos que no tengan conexiones con los otros, o que si quiera presenten caminos.
